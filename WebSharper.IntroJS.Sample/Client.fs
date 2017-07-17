@@ -5,6 +5,7 @@ open WebSharper.JavaScript
 open WebSharper.JQuery
 open WebSharper.UI.Next
 open WebSharper.UI.Next.Client
+open WebSharper.UI.Next.Html
 open WebSharper.UI.Next.Templating
 open WebSharper.IntroJS
 
@@ -23,21 +24,49 @@ module Client =
     [<Require(typeof<WebSharper.IntroJS.Resources.MainTheme>)>]
     [<SPAEntryPoint>]
     let Main () =
-        let newName = Var.Create ""
-
-        IndexTemplate.Main()
-            .ListContainer(
-                People.View.DocSeqCached(fun (name: string) ->
-                    IndexTemplate.ListItem().Name(name).Doc()
+        let intro = IntroJS.IntroJs()
+        
+        let title =
+            h1 [text "I am the title."]
+            
+        let content =
+            div 
+                [
+                    p [text "I am a paragraph inside"]
+                    p [text "I am another paragraph"]
+                ]
+                
+        let introButton =
+            Doc.Button "Intro" [] (fun _ -> intro.Start() |> ignore)
+                
+        let container =
+            div 
+                [
+                    title
+                    content
+                    introButton
+                ]
+            
+        intro.AddSteps(
+            [|
+                IntroJS.StepConfig(
+                    Element = title.Dom,
+                    Intro = "This is the title"
                 )
-            )
-            .Name(newName)
-            .Add(fun _ ->
-                People.Add(newName.Value)
-                newName.Value <- ""
-            )
-            .Intro(fun _ ->
-                IntroJS.IntroJs().Start() |> ignore
-            )
-            .Doc()
+                IntroJS.StepConfig(
+                    Element = introButton.Dom,
+                    Intro = "This is the button you pressed"
+                )
+                IntroJS.StepConfig(
+                    Element = content.Dom,
+                    Intro = "This is the content on the page"
+                )
+                IntroJS.StepConfig(
+                    Element = container.Dom,
+                    Intro = "This is the whole page"
+                )
+            |]    
+        )
+        
+        container
         |> Doc.RunById "main"
