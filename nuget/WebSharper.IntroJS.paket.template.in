@@ -1,0 +1,19 @@
+type file
+id WebSharper.IntroJS
+authors
+    IntelliFactory
+owners
+    IntelliFactory
+licenseUrl http://websharper.com/licensing
+projectUrl https://github.com/intellifactory/https://github.com/intellifactory/websharper.introjs
+description
+    WebSharper Extension for introjs 2.5.0
+tags
+    Web JavaScript F# C#
+files
+    ../WebSharper.IntroJS/bin/Release/netstandard2.0/WebSharper.IntroJS.dll ==> lib/net461
+    ../WebSharper.IntroJS/bin/Release/netstandard2.0/WebSharper.IntroJS.xml ==> lib/net461
+    ../WebSharper.IntroJS/bin/Release/netstandard2.0/WebSharper.IntroJS.dll ==> lib/netstandard2.0
+    ../WebSharper.IntroJS/bin/Release/netstandard2.0/WebSharper.IntroJS.xml ==> lib/netstandard2.0
+dependencies
+        WebSharper ~> LOCKEDVERSION/3

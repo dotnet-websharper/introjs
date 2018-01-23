@@ -3,10 +3,10 @@ namespace WebSharper.IntroJS.Sample
 open WebSharper
 open WebSharper.JavaScript
 open WebSharper.JQuery
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
-open WebSharper.UI.Next.Templating
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
+open WebSharper.UI.Templating
 open WebSharper.IntroJS
 
 [<JavaScript>]
@@ -27,20 +27,20 @@ module Client =
         let intro = IntroJS.IntroJs()
         
         let title =
-            h1 [text "I am the title."]
+            h1 [] [text "I am the title."]
             
         let content =
-            div 
+            div []
                 [
-                    p [text "I am a paragraph inside"]
-                    p [text "I am another paragraph"]
+                    p [] [text "I am a paragraph inside"]
+                    p [] [text "I am another paragraph"]
                 ]
                 
         let introButton =
             Doc.Button "Intro" [] (fun _ -> intro.Start() |> ignore)
                 
         let container =
-            div 
+            div []
                 [
                     title
                     content
