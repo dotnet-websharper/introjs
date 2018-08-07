@@ -27,10 +27,10 @@ module Client =
         let intro = IntroJS.IntroJs()
         
         let title =
-            h1 [] [text "I am the title."]
+            Elt.h1 [] [text "I am the title."]
             
         let content =
-            div []
+            Elt.div []
                 [
                     p [] [text "I am a paragraph inside"]
                     p [] [text "I am another paragraph"]
@@ -40,7 +40,7 @@ module Client =
             Doc.Button "Intro" [] (fun _ -> intro.Start() |> ignore)
                 
         let container =
-            div []
+            Elt.div []
                 [
                     title
                     content
