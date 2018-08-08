@@ -37,7 +37,7 @@ module Client =
                 ]
                 
         let introButton =
-            Doc.Button "Intro" [] (fun _ -> intro.Start() |> ignore)
+            Elt.Button "Intro" [] (fun _ -> intro.Start() |> ignore)
                 
         let container =
             Elt.div []
