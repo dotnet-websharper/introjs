@@ -4,6 +4,8 @@
 /build/
 /*/bin/
 /*/obj/
+/*/wwwroot/Scripts
+/*/node_modules/
 /packages/
 /tools/packages/
 
