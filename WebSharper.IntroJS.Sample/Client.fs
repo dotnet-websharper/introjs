@@ -21,7 +21,6 @@ namespace WebSharper.IntroJS.Sample
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.JQuery
 open WebSharper.UI
 open WebSharper.UI.Client
 open WebSharper.UI.Html
@@ -32,7 +31,7 @@ open WebSharper.IntroJS
 module Client =
     // The templates are loaded from the DOM, so you just can edit index.html
     // and refresh your browser, no need to recompile unless you add or remove holes.
-    type IndexTemplate = Template<"index.html", ClientLoad.FromDocument>
+    type IndexTemplate = Template<"wwwroot/index.html", ClientLoad.FromDocument>
 
     let People =
         ListModel.FromSeq [
@@ -40,10 +39,11 @@ module Client =
             "Paul"
         ]
        
-    [<Require(typeof<WebSharper.IntroJS.Resources.MainTheme>)>]
     [<SPAEntryPoint>]
     let Main () =
-        let intro = IntroJS.IntroJs()
+        let intro = new IntroJs()
+
+        Styles.Main()
         
         let title =
             Elt.h1 [] [text "I am the title."]

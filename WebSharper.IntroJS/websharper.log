@@ -1,0 +1,10 @@
+2025-07-01 15:42:09.7252|DEBUG|Program|location of wsfscservice is: C:\Users\souva\.nuget\packages\websharper.fsharp\10.0.0.581-beta1\tools\net8.0\win-x64 (server side)
+2025-07-01 15:42:09.7252|DEBUG|Program|pipename is: 0512a0638d53f07028ccf433747eaa06 (server side)
+2025-07-01 15:42:09.7252|DEBUG|Program|Compiling D:\WebSharper\Binding projects\introjs\WebSharper.IntroJS\WebSharper.IntroJS.fsproj
+2025-07-01 15:42:10.0752|TRACE|Program|Server sends: n: F# compilation: 00:00:00.3506130
+2025-07-01 15:42:10.1993|TRACE|Program|Server sends: n: Loading IExtension implementation: 00:00:00.1240845
+2025-07-01 15:42:10.2031|TRACE|Program|Server sends: n: Getting Assembly definition: 00:00:00.0038835
+2025-07-01 15:42:10.2611|TRACE|Program|Server sends: n: Built assembly: 00:00:00.0579685
+2025-07-01 15:42:10.2657|TRACE|Program|Server sends: n: Creating WebSharper metadata: 00:00:00.0046401
+2025-07-01 15:42:10.2657|TRACE|Program|Server sends: n: Writing final dll: 00:00:00.0028085
+2025-07-01 15:42:10.2657|TRACE|Program|Server sends: x: 0

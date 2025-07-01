@@ -1,4 +1,4 @@
-// $begin{copyright}
+﻿// $begin{copyright}
 //
 // This file is part of WebSharper
 //
@@ -20,31 +20,41 @@
 namespace WebSharper.IntroJS.Extension
 
 open WebSharper
+open WebSharper.JavaScript
 open WebSharper.InterfaceGenerator
 
 module Definition =
 
+    let Styles = Class "Styles"
+
     let StepConfigClass =
         Pattern.Config "StepConfig" {
             Required = []
-            Optional = 
-                [
-                    "intro", T<string>
-                    "element", T<JavaScript.Dom.Element>
-                    "position", T<string>
-                ]
+            Optional = [
+                "step", T<int>
+                "title", T<string>
+                "intro", T<string>
+                "position", T<string>
+                "scrollTo", T<string>
+                "tooltipClass", T<string>
+                "highlightClass", T<string>
+                "element", T<Dom.Element> + T<string> + T<obj>
+                "disableInteraction", T<bool>
+            ]
         }
 
     let HintConfigClass =
         Pattern.Config "HintConfig" {
             Required = []
-            Optional = 
-                [
-                    "hint", T<string>
-                    "element", T<JavaScript.Dom.Element>
-                    "position", T<string>
-                    "hintPosition", T<string>
-                ]
+            Optional = [
+                "position", T<string>
+                "hintPosition", T<string>
+                "element", T<Dom.Element> + T<string> + T<obj>
+                "tooltipClass", T<string>
+                "hint", T<string>
+                "hintTargetElement", T<Dom.Element>
+                "hintAnimation", T<bool>
+            ]
         }
 
     let OptionsClass =
@@ -53,122 +63,158 @@ module Definition =
             Optional =
                 [
                     "steps", !| StepConfigClass.Type
+                    "hints", !| HintConfigClass.Type
+                    "isActive", T<bool>
                     "nextLabel", T<string>
                     "prevLabel", T<string>
+                    "skipLabel", T<string>
                     "doneLabel", T<string>
                     "hidePrev", T<bool>
                     "hideNext", T<bool>
-                    "tooltipPostition", T<string>
+                    "nextToDone", T<bool>
+                    "tooltipPosition", T<string>
                     "tooltipClass", T<string>
-                    "hightlightClass", T<string>
+                    "group", T<string>
+                    "highlightClass", T<string>
                     "exitOnEsc", T<bool>
                     "exitOnOverlayClick", T<bool>
                     "showStepNumbers", T<bool>
+                    "stepNumbersOfLabel", T<string>
                     "keyboardNavigation", T<bool>
                     "showButtons", T<bool>
                     "showBullets", T<bool>
                     "showProgress", T<bool>
                     "scrollToElement", T<bool>
-                    "overlayOpacity", T<JavaScript.Number>
+                    "scrollTo", T<string>
+                    "scrollPadding", T<int>
+                    "overlayOpacity", T<float>
+                    "autoPosition", T<bool>
+                    "positionPrecedence", !| T<string>
                     "disableInteraction", T<bool>
-                ]
-        }
-
-    let HintOptionsClass =
-        Pattern.Config "HintOptions" {
-            Required = []
-            Optional = 
-                [
+                    "dontShowAgain", T<bool>
+                    "dontShowAgainLabel", T<string>
+                    "dontShowAgainCookie", T<string>
+                    "dontShowAgainCookieDays", T<int>
+                    "helperElementPadding", T<int>
                     "hintPosition", T<string>
                     "hintButtonLabel", T<string>
+                    "hintShowButton", T<bool>
+                    "hintAutoRefreshInterval", T<int>
                     "hintAnimation", T<bool>
+                    "buttonClass", T<string>
+                    "progressBarAdditionalClass", T<bool>
                 ]
         }
 
     let IntroJSClass =
         Class "introJs"
+        |> ImportDefault "intro.js/intro.js"
         |+> Static [
-            Constructor (!? T<string>)
+            Constructor (!? T<HTMLElement>)
         ]
         |+> Instance [
-            "start" => T<unit> ^-> TSelf
+            "isActive" => T<unit> ^-> T<bool>
 
-            "goToStep" => T<int> ^-> TSelf
+            "clone" => T<unit> ^-> TSelf
+
+            "setOption" => T<string> * T<obj> ^-> TSelf
+
+            "setOptions" => T<obj> ^-> TSelf
+
+            "start" => T<unit> ^-> T<Promise<_>>[TSelf]
+
+            "goToStep" => T<int> ^-> T<Promise<_>>[TSelf]
 
             "addStep" => StepConfigClass.Type ^-> T<unit>
 
             "addSteps" => !| StepConfigClass.Type ^-> T<unit>
 
-            "nextStep" => T<unit> ^-> TSelf
+            "goToStepNumber" => T<int> ^-> T<Promise<_>>[TSelf]
 
-            "previousStep" => T<unit> ^-> TSelf
+            "nextStep" => T<unit> ^-> T<Promise<_>>[TSelf]
 
-            "exit" => T<unit> ^-> TSelf
+            "previousStep" => T<unit> ^-> T<Promise<_>>[TSelf]
 
-            "setOption" => T<string> * T<string> ^-> TSelf
+            "currentStep" => T<unit> ^-> T<int>
 
-            "setOptions" => (OptionsClass.Type ^-> TSelf) + (HintOptionsClass.Type ^-> TSelf)
+            "exit" => T<bool> ^-> T<Promise<_>>[TSelf]
 
             "refresh" => T<unit> ^-> TSelf
 
-            "oncomplete" => T<JavaScript.Function> ^-> TSelf
+            "setDontShowAgain" => T<bool> ^-> TSelf
 
-            "onexit" => T<JavaScript.Function> ^-> TSelf
+            "onbeforechange" => T<Function> ^-> TSelf
 
-            "onchange" => T<JavaScript.Function> ^-> TSelf
+            "onchange" => T<Function> ^-> TSelf
 
-            "onbeforechange" => T<JavaScript.Function> ^-> TSelf
+            "onafterchange" => T<Function> ^-> TSelf
 
-            "onafterchange" => T<JavaScript.Function> ^-> TSelf
+            "oncomplete" => T<Function> ^-> TSelf
+
+            "onstart" => T<Function> ^-> TSelf
+
+            "onexit" => T<Function> ^-> TSelf
+
+            "onskip" => T<Function> ^-> TSelf
+
+            "onbeforeexit" => T<Function> ^-> TSelf
 
             // Hints
 
-            "addHints" => T<unit> ^-> TSelf
+            "onhintsadded" => T<Function> ^-> TSelf
 
-            "showHint" => T<int> ^-> TSelf
+            "onhintclick" => T<Function> ^-> TSelf
 
-            "showHints" => T<unit> ^-> TSelf
+            "onhintclose" => T<Function> ^-> TSelf
 
-            "hideHint" => T<int> ^-> TSelf
+            "addHints" => T<unit> ^-> T<Promise<_>>[TSelf]
 
-            "hideHints" => T<unit> ^-> TSelf
+            "showHint" => T<int> ^-> T<Promise<_>>[TSelf]
 
-            "onhintclick" => T<JavaScript.Function> ^-> TSelf
+            "showHints" => T<unit> ^-> T<Promise<_>>[TSelf]
 
-            "onhintsadded" => T<JavaScript.Function> ^-> TSelf
+            "removeHint" => T<int> ^-> TSelf
 
-            "onhintclose" => T<JavaScript.Function> ^-> TSelf
+            "removeHints" => T<unit> ^-> TSelf
+
+            "hideHint" => T<int> ^-> T<Promise<_>>[TSelf]
+
+            "hideHints" => T<unit> ^-> T<Promise<_>>[TSelf]
+
+            "showHintDialog" => T<int> ^-> T<Promise<_>>[TSelf]
 
         ]
 
+    let _ =
+        [
+            // Main core styles
+            "Main", "intro.js/introjs.css"
+            "RTL", "intro.js/introjs-rtl.css"
+
+            // Themes (from your `themes` folder)
+            "Dark", "intro.js/themes/introjs-dark.css"
+            "Flattener", "intro.js/themes/introjs-flattener.css"
+            "Modern", "intro.js/themes/introjs-modern.css"
+            "Nassim", "intro.js/themes/introjs-nassim.css"
+            "Nazanin", "intro.js/themes/introjs-nazanin.css"
+            "Royal", "intro.js/themes/introjs-royal.css"
+        ]
+        |> List.iter (fun (name, path) ->
+            Styles
+            |+> Static [
+                name => T<unit> ^-> T<unit>
+                |> ImportFile path
+            ] |> ignore
+        )
+
     let Assembly =
         Assembly [
-            Namespace "WebSharper.IntroJS.Resources" [
-                Resource "Js" "https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.5.0/intro.min.js" 
-                |> AssemblyWide
-
-                Resource "MainTheme" "https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.5.0/introjs.min.css"
-
-                Resource "RTLTheme" "https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.5.0/introjs-rtl.min.css"
-
-                Resource "DarkTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-dark.css"
-
-                Resource "FlattenerTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-flattener.css"
-
-                Resource "ModernTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-modern.css"
-
-                Resource "NassimTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-nassim.css"
-            
-                Resource "NazaninTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-nazanin.css"
-
-                Resource "RoyalTheme" "https://cdn.rawgit.com/usablica/intro.js/4c364c90/themes/introjs-royal.css"
-            ]
             Namespace "WebSharper.IntroJS" [
                 IntroJSClass
-                HintOptionsClass
                 HintConfigClass
                 StepConfigClass
                 OptionsClass
+                Styles
             ]
         ]
 
